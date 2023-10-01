@@ -28,6 +28,7 @@ import { createThread } from "@/lib/actions/thread.actions";
 
 function PostThread({ userId }: { userId: string }) {
   const pathname = usePathname();
+  const router = useRouter();
   const form = useForm({
     resolver: zodResolver(ThreadValidation),
     defaultValues: {
@@ -43,6 +44,7 @@ function PostThread({ userId }: { userId: string }) {
       community: null,
       path: pathname,
     });
+    router.push("/");
   };
   return (
     <Form {...form}>
