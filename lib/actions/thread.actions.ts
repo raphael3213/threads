@@ -69,3 +69,65 @@ export async function fetchPosts(pageNumber = 1, pageSize = 20) {
       throw new Error(`Error in Threads fetch : ${error.message}`);
   }
 }
+
+export async function fetchThreadById(id: string) {
+  try {
+    connectToDB();
+
+    const thread = await Thread.findById(id)
+      .populate({
+        path: "author",
+        model: User,
+        select: "_id id name image",
+      })
+      .populate({
+        path: "children",
+        populate: [
+          {
+            path: "author",
+            model: "user",
+            select: "_id id name parentId image",
+          },
+          {
+            path: "children",
+            model: Thread,
+            populate: {
+              path: "author",
+              model: User,
+              select: "_id id name parentId image",
+            },
+          },
+        ],
+      })
+      .exec();
+
+    return thread;
+  } catch (error) {
+    if (error instanceof Error)
+      throw new Error(`Error in Threads fetch : ${error.message}`);
+  }
+}
+
+export async function addCommentToThread({
+  threadId,
+  commentText,
+  userId,
+  path,
+}: {
+  threadId: string;
+  commentText: string;
+  userId: string;
+  path: string;
+}) {
+  try {
+    connectToDB();
+
+    const originalThread = await Thread.findById(threadId);
+
+    if(!originalThread){
+      throw new Error("Thread not found")
+    }
+  } catch (error) {
+    
+  }
+}
