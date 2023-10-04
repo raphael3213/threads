@@ -37,9 +37,25 @@ async function Page({ params }: { params: { id: string } }) {
       <div className="mt-7">
         <Comment
           threadId={thread._id}
-          currentUserImg={user.imageUrl}
+          currentUserImg={userInfo.image}
           currentUserId={userInfo._id.toString()}
         />
+      </div>
+      <div className="mt-10">
+        {thread.children.map((childItem: any) => (
+          <ThreadCard
+            key={childItem._id}
+            id={childItem._id}
+            currentUserId={user?.id}
+            parentId={childItem.parentId}
+            content={childItem.text}
+            author={childItem.author}
+            comments={childItem.children}
+            createdAt={childItem.createdAt}
+            community={childItem.community}
+            isComment={true}
+          />
+        ))}
       </div>
     </section>
   );

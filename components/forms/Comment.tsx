@@ -14,9 +14,10 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { CommentValidation } from "@/lib/validations/thread";
 import { Input } from "../ui/input";
-import { useRouter } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import { Button } from "../ui/button";
 import Image from "next/image";
+import { addCommentToThread } from "@/lib/actions/thread.actions";
 
 type CommentProps = {
   threadId: string;
@@ -26,6 +27,7 @@ type CommentProps = {
 
 function Comment({ threadId, currentUserImg, currentUserId }: CommentProps) {
   const router = useRouter();
+  const path = usePathname();
   const form = useForm({
     resolver: zodResolver(CommentValidation),
     defaultValues: {
@@ -34,7 +36,16 @@ function Comment({ threadId, currentUserImg, currentUserId }: CommentProps) {
     },
   });
 
-  const onSubmit = () => {};
+  const onSubmit = async (values: z.infer<typeof CommentValidation>) => {
+    await addCommentToThread({
+      threadId: threadId,
+      commentText: values.thread,
+      userId: currentUserId,
+      path: path,
+    });
+
+    form.reset();
+  };
 
   return (
     <Form {...form}>

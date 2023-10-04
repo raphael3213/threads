@@ -85,7 +85,7 @@ export async function fetchThreadById(id: string) {
         populate: [
           {
             path: "author",
-            model: "user",
+            model: User,
             select: "_id id name parentId image",
           },
           {
@@ -124,10 +124,25 @@ export async function addCommentToThread({
 
     const originalThread = await Thread.findById(threadId);
 
-    if(!originalThread){
-      throw new Error("Thread not found")
+    if (!originalThread) {
+      throw new Error("Thread not found");
     }
+
+    const commentThread = new Thread({
+      text: commentText,
+      author: userId,
+      parentId: threadId,
+    });
+
+    const savedCommentThread = await commentThread.save();
+
+    originalThread.children.push(savedCommentThread._id);
+
+    await originalThread.save();
+
+    revalidatePath(path);
   } catch (error) {
-    
+    if (error instanceof Error)
+      throw new Error(`Error in Add comment : ${error.message}`);
   }
 }
