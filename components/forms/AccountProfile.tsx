@@ -43,28 +43,33 @@ function AccountProfile({ user, btnTitle }: AccountProfileProps) {
   const router = useRouter();
   const pathname = usePathname();
   async function onSubmit(values: z.infer<typeof UserValidation>) {
-    const blob = values.profile_photo;
-    const hasImageChanged = isBase64Image(blob);
-    if (hasImageChanged) {
-      const imgRes = await startUpload(files);
-      if (imgRes && imgRes[0].fileUrl) {
-        values.profile_photo = imgRes[0].fileUrl;
+    try {
+      const blob = values.profile_photo;
+      const hasImageChanged = isBase64Image(blob);
+      if (hasImageChanged) {
+        const imgRes = await startUpload(files);
+        if (imgRes && imgRes[0].fileUrl) {
+          values.profile_photo = imgRes[0].fileUrl;
+        }
       }
-    }
 
-    await updateUser({
-      userId: user.id,
-      username: values.username,
-      name: values.name,
-      bio: values.bio,
-      image: values.profile_photo,
-      path: pathname,
-    });
+      await updateUser({
+        userId: user.id,
+        username: values.username,
+        name: values.name,
+        bio: values.bio,
+        image: values.profile_photo,
+        path: pathname,
+      });
 
-    if (pathname === "/profile/edit") {
-      router.back();
-    } else {
-      router.push("/");
+      if (pathname === "/profile/edit") {
+        router.back();
+      } else {
+        router.push("/");
+      }
+    } catch (error) {
+      if (error instanceof Error)
+        throw new Error(`Error in account creation request ${error.message}`);
     }
   }
 
