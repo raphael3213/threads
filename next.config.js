@@ -19,7 +19,7 @@ const nextConfig = {
         hostname: "uploadthing.com",
       },
       {
-        protocol: "https",gi
+        protocol: "https",
         hostname: "placehold.co",
       },
       {
