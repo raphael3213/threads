@@ -3,6 +3,7 @@ import { redirect } from "next/navigation";
 import React from "react";
 import next from "next";
 import ThreadCard from "../cards/ThreadCard";
+import { fetchCommunityPosts } from "@/lib/actions/community.actions";
 
 type ThreadsTabProps = {
   currentUserId: string;
@@ -14,7 +15,12 @@ async function ThreadsTab({
   accountId,
   accountType,
 }: ThreadsTabProps) {
-  let result = await fetchUserPosts({ userId: accountId });
+  let result: any;
+  if (accountType === "Community") {
+    result = await fetchCommunityPosts(accountId);
+  } else {
+    result = await fetchUserPosts({ userId: accountId });
+  }
 
   if (!result) redirect("/");
   return (
@@ -37,7 +43,11 @@ async function ThreadsTab({
           }
           comments={thread.children}
           createdAt={thread.createdAt}
-          community={thread.community}
+          community={
+            accountType === "Community"
+              ? { name: result.name, id: result.id, image: result.image }
+              : thread.community
+          }
         />
       ))}
     </section>

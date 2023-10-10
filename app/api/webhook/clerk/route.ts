@@ -205,4 +205,9 @@ export const POST = async (request: Request) => {
       );
     }
   }
+
+  return NextResponse.json(
+    { message: "Not Subscribed to this event" },
+    { status: 400 }
+  );
 };

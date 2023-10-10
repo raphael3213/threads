@@ -19,7 +19,7 @@ const nextConfig = {
         hostname: "uploadthing.com",
       },
       {
-        protocol: "https",
+        protocol: "https",gi
         hostname: "placehold.co",
       },
       {
@@ -27,9 +27,6 @@ const nextConfig = {
         hostname: "utfs.io",
       },
     ],
-  },
-  typescript: {
-    ignoreBuildErrors: true,
   },
 };
 
